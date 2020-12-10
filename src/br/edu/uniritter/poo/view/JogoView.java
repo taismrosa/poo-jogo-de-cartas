@@ -5,9 +5,13 @@ import br.edu.uniritter.poo.model.Mesa;
 import java.util.List;
 import java.util.Scanner;
 
-public class jogoView {
+public class JogoView {
     Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Retorna se o usuário quer ver as regras ou não
+     * @return resp
+     */
     public char verRegras () {
         char resp;
         do {
@@ -16,6 +20,9 @@ public class jogoView {
         } while (resp != 'S' && resp != 'N');
         return resp;
     }
+    /**
+     * Imprime as regras do jogo
+     */
     public void mostrarRegras () {
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         System.out.println("                                          REGRAS - ESCOVA                                          ");
@@ -54,6 +61,12 @@ public class jogoView {
         System.out.println("     Todos os Ouros: 8 pontos");
         System.out.println("     Todos os Setes: 7 pontos\n\n");
     }
+    /**
+     * Retorna a quantidade de jogadores que serão registrados
+     * @param min
+     * @param max
+     * @return qtd
+     */
     public int quantidadeJogadores (int min, int max) {
         int qtd;
         System.out.println("Número de jogadores (2 a 4): ");
@@ -62,33 +75,97 @@ public class jogoView {
         } while (qtd < min || qtd > max);
         return qtd;
     }
+    /**
+     * Retorna o nome inserido pelo usuário
+     * @param num
+     * @return nome
+     */
     public String nomeJogador (int num) {
         System.out.println("Informe o nome do jogador "+(num)+": ");
         String nome = scanner.next();
         return nome;
     }
+    /**
+     * Imprime o número da rodada
+     * @param num
+     */
     public void mostrarRodada (int num) {
         System.out.println("\n@@@@@@@@@@@@@@@@");
         System.out.println("     RODADA "+num);
         System.out.println("@@@@@@@@@@@@@@@@");
     }
+    /**
+     * Imprime a mesa
+     * @param mesa
+     */
     public void mostrarMesa (Mesa mesa) {
         System.out.println(mesa);
     }
+    /**
+     * Imprime o nome do jogador que deve jogar
+     * @param j
+     */
     public void mostrarJogadorAtual (Jogador j) {
         System.out.println("Agora é a vez de "+j.getNome());
     }
+    /**
+     * Imprime que a jogada foi válida
+     */
+    public void jogadaValida () {
+        System.out.println("\nBOA! A soma deu 15 :D Cartas no deck.");
+    }
+    /**
+     * Imprime que a jogada foi inválida
+     */
+    public void jogadaInvalida () {
+        System.out.println("\nVocê não tem jogo :( Carta na mesa.");
+    }
+    /**
+     * Imprime que foi realizada uma escova
+     */
+    public void jogadaComEscova () {
+        System.out.println("Parabéns, você fez uma ESCOVA!!!");
+    }
+    /**
+     * Imprime que a carta 7 de Ouro estava incluída na jogada
+     */
+    public void jogadaComSeteBelo () {
+        System.out.println("Uhul! Sete belo no deck? Check!");
+    }
+    /**
+     * Informa que, para continuar o jogo, o usuário deve teclar ENTER
+     */
     public static void continuar () {
         Scanner scanEnter = new Scanner(System.in);
         System.out.println("Tecle ENTER para prosseguir");
         String pressKey = scanEnter.nextLine();
     }
+    /**
+     * Imprime o jogador vencedor
+     * @param vencedor
+     */
     public void mostrarVencedor (Jogador vencedor) {
         System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n\n");
         System.out.println("                       O VENCEDOR É...                       ");
         System.out.println("                       "+vencedor+"                          ");
         System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
     }
+    /**
+     * Retorna se o usuário quer ver as regras ou não
+     * @return resp
+     */
+    public char verPlacarFinal () {
+        char resp;
+        do {
+            System.out.println("Quer ver o placar final? [S/N]");
+            resp = scanner.next().charAt(0);
+        } while (resp != 'S' && resp != 'N');
+        return resp;
+    }
+    /**
+     * Imprime a pontuação de todos os jogadores
+     * @param jogadores
+     */
     public void mostrarPlacarFinal (List<Jogador> jogadores) {
         System.out.println(" PLACAR FINAL ");
         System.out.println(jogadores);

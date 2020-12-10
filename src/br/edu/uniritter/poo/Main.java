@@ -6,10 +6,10 @@
 
 package br.edu.uniritter.poo;
 
-import br.edu.uniritter.poo.controller.jogoController;
+import br.edu.uniritter.poo.controller.JogoController;
 
 public class Main {
     public static void main(String[] args) {
-        jogoController.getInstance().iniciarJogo();
+        JogoController.getInstance().preJogo();
     }
 }

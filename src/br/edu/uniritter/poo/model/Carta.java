@@ -3,12 +3,24 @@ package br.edu.uniritter.poo.model;
 public abstract class Carta {
     protected int valor;
 
+    /**
+     * Retorna o valor da carta
+     * @return this.valor
+     */
     public int getValor () {
         return this.valor;
     }
+    /**
+     * Retorna uma String informando o valor e naipe da carta
+     * @return
+     */
     public String getDescricao () {
         return getNomeValor()+getNaipe();
     }
+    /**
+     * Caso o valor da carta corresponda a uma figura, o número é substituído pelo nome dela
+     * @return ret
+     */
     public String getNomeValor () {
         String ret = "";
         if (this.valor >= 2 || this.valor <= 7) {
@@ -32,6 +44,10 @@ public abstract class Carta {
         }
         return ret;
     }
+    /**
+     * Retorna o naipe da carta
+     * @return String
+     */
     public abstract String getNaipe();
 
     @Override

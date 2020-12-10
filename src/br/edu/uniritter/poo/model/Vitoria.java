@@ -4,9 +4,17 @@ import java.util.List;
 
 public class Vitoria {
 
+    /**
+     * Cria constructor em branco
+     */
     public Vitoria () {
 
     }
+    /**
+     * Retorna qual jogador tem a maior quantidade de pontos
+     * @param jgs
+     * @return vencedor
+     */
     public Jogador getVencedor (List<Jogador> jgs) {
         Jogador vencedor = null;
         int maisPontos = 0;

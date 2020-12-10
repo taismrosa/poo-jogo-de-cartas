@@ -1,15 +1,15 @@
 package br.edu.uniritter.poo.controller;
 
 import br.edu.uniritter.poo.model.*;
-import br.edu.uniritter.poo.view.jogadorView;
-import br.edu.uniritter.poo.view.jogoView;
+import br.edu.uniritter.poo.view.JogadorView;
+import br.edu.uniritter.poo.view.JogoView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class jogoController {
-    private static jogoController instancia;
-    private jogoView jgv;
-    private jogadorView jdv;
+public class JogoController {
+    private static JogoController instancia;
+    private JogoView jgv;
+    private JogadorView jdv;
     private Baralho bar;
     private Mesa mesa;
     private Pontos pts;
@@ -21,34 +21,40 @@ public class jogoController {
     private Vitoria vit;
     private Jogador ultimoPontuador;
 
-    public static jogoController getInstance () {
+    /**
+     * Cria apenas uma instância de JogoController
+     * @return instancia
+     */
+    public static JogoController getInstance () {
         if (instancia == null) {
-            instancia = new jogoController();
+            instancia = new JogoController();
         }
         return instancia;
     }
-    public void iniciarJogo() {
+    /**
+     * Prepara os objetos necessários para o jogo
+     */
+    public void preJogo () {
         this.bar = new Baralho();
         this.mesa = new Mesa();
         this.pts = new Pontos();
-        this.jgv = new jogoView();
-        this.jdv = new jogadorView();
+        this.jgv = new JogoView();
+        this.jdv = new JogadorView();
         this.vit = new Vitoria();
-        char regras = jgv.verRegras();
-        if (regras == 'S') {
-            jgv.mostrarRegras();
-        }
-        this.qtdJogadores = jgv.quantidadeJogadores(2, 4);
+        verRegras();
+        this.qtdJogadores = this.jgv.quantidadeJogadores(2, 4);
         this.jogadores = new ArrayList<>();
         registrarJogadores();
-        bar.embaralhar();
+        this.bar.embaralhar();
         distribuirJog();
-        if (this.numRodada == 1) {
-            distribuirMesa();
-            if (this.pts.quinzeInicial(this.mesa)) {
-                this.jogadores.get(0).addPontos(1);
-            }
-        }
+        distribuirMesa();
+        iniciarJogo();
+    }
+    /**
+     * Garante que, enquanto houver cartas no baralho e na mão dos jogadores, o jogo continua
+     */
+    public void iniciarJogo() {
+        verificarPrimeiraMesa();
         while (!this.finalizado) {
             if (this.jogadores.get(this.jogadorAtual).getMao().size() == 0) {
                 distribuirJog();
@@ -56,7 +62,7 @@ public class jogoController {
             iniciarRodada();
             jgv.continuar();
             proximoJogador();
-            if (!bar.temCarta()) {
+            if (!this.bar.temCarta()) {
                 int jogadoresFinalizados = 0;
                 for (int x = 0; x < this.jogadores.size(); x++) {
                     if (this.jogadores.get(x).getMao().size() == 0) {
@@ -68,6 +74,116 @@ public class jogoController {
                 }
             }
         }
+        encerrarJogo();
+    }
+    /**
+     * Verifica se o jogador quer ler as regras
+     */
+    public void verRegras () {
+        char regras = this.jgv.verRegras();
+        if (regras == 'S') {
+            this.jgv.mostrarRegras();
+        }
+    }
+    /**
+     * Adiciona os dados registrados para a lista de jogadores
+     */
+    public void registrarJogadores () {
+        for (int i = 1; i <= this.qtdJogadores; i++) {
+            String nm = this.jgv.nomeJogador(i);
+            this.jogadores.add(new Jogador(nm));
+        }
+    }
+    /**
+     * Distribui 3 cartas para cada jogador
+     */
+    public void distribuirJog () {
+        for (int i = 0; i < this.qtdJogadores; i++) {
+            for (int j = 0; j < 3; j++) {
+                this.jogadores.get(i).receberCarta(this.bar.comprar());
+            }
+        }
+    }
+    /**
+     * Distribui 4 cartas na mesa
+     */
+    public void distribuirMesa () {
+        for (int i = 0; i < 4; i++) {
+            this.mesa.receberCarta(this.bar.comprar());
+        }
+    }
+    /**
+     * Adiciona 1 ponto ao carteador caso ele tenha atendido ao critério de "quinzeInicial()"
+     */
+    public void verificarPrimeiraMesa () {
+        if (this.pts.quinzeInicial(this.mesa)) {
+            this.jogadores.get(0).addPontos(1);
+        }
+    }
+    /**
+     * A cada rodada, espera as ações e atualiza os dados de cada jogador
+     */
+    public void iniciarRodada () {
+        this.jgv.mostrarRodada(this.numRodada);
+        this.jgv.mostrarMesa(mesa);
+        this.jgv.mostrarJogadorAtual(this.jogadores.get(this.jogadorAtual));
+        this.jdv.mostrarMao(this.jogadores.get(this.jogadorAtual));
+        if (this.jogadores.get(this.jogadorAtual).getMao().size() > 0 ) {
+            escolherCartas((this.jdv.cartaMao(this.jogadores.get(this.jogadorAtual).getMao().size())-1));
+        }
+        this.jdv.mostrarDados(this.jogadores.get(this.jogadorAtual));
+    }
+    /**
+     * Gerencia as mudanças de estado de jogador e mesa (adicionar ou largar cartas)
+     * @param op
+     */
+    public void escolherCartas (int op) {
+        List<Carta> cartasRodada;
+        cartasRodada = new ArrayList<>();
+        Carta cartaMao = this.jogadores.get(this.jogadorAtual).getMao().get(op);
+        cartasRodada.add(cartaMao);
+        if (this.mesa.getMesa().size() > 0) {
+            int qtdCartas = jdv.qtdCartasMesa(this.mesa.getMesa().size());
+            if (qtdCartas > 0) {
+                for (int i = 1; i <= qtdCartas; i++) {
+                    cartasRodada.add(this.mesa.getMesa().get(jdv.cartaMesa(this.mesa.getMesa().size())-1));
+                }
+            }
+        }
+        if (this.jogadores.get(this.jogadorAtual).jogar(cartasRodada)) {
+            jgv.jogadaValida();
+            this.ultimoPontuador = this.jogadores.get(this.jogadorAtual);
+            this.mesa.removerCarta(cartasRodada);
+            this.jogadores.get(this.jogadorAtual).adicionarAoDeck(cartasRodada);
+            if (this.mesa.getMesa().size() == 0) {
+                this.jogadores.get(this.jogadorAtual).addPontos(1);
+                jgv.jogadaComEscova();
+            }
+            if  (this.pts.seteBelo(cartasRodada)) {
+                this.jogadores.get(this.jogadorAtual).addPontos(1);
+                jgv.jogadaComSeteBelo();
+            }
+        }
+        else {
+            jgv.jogadaInvalida();
+            this.mesa.receberCarta(cartasRodada.get(0));
+        }
+        this.jogadores.get(this.jogadorAtual).largarCarta(cartaMao);
+    }
+    /**
+     * Atualiza o próximo jogador, caso esteja no último, inicia nova rodada
+     */
+    public void proximoJogador () {
+        this.jogadorAtual++;
+        if (this.jogadorAtual == this.qtdJogadores) {
+            this.jogadorAtual = 0;
+            numRodada++;
+        }
+    }
+    /**
+     * Faz a contagem de pontos finais e retorna o vencedor do jogo
+     */
+    public void encerrarJogo () {
         if (this.mesa.getMesa().size() > 0) {
             this.ultimoPontuador.adicionarAoDeck(this.mesa.getMesa());
             this.ultimoPontuador.addPontos(1);
@@ -97,74 +213,15 @@ public class jogoController {
             }
         }
         jgv.mostrarVencedor(vit.getVencedor(this.jogadores));
-        jgv.mostrarPlacarFinal(this.jogadores);
+        verPlacar();
     }
-    public void registrarJogadores () {
-        for (int i = 1; i <= this.qtdJogadores; i++) {
-            String nm = this.jgv.nomeJogador(i);
-            this.jogadores.add(new Jogador(nm));
-        }
-    }
-    public void distribuirJog () {
-        for (int i = 0; i < this.qtdJogadores; i++) {
-            for (int j = 0; j < 3; j++) {
-                this.jogadores.get(i).receberCarta(this.bar.comprar());
-            }
-        }
-    }
-    public void distribuirMesa () {
-        for (int i = 0; i < 4; i++) {
-            this.mesa.receberCarta(this.bar.comprar());
-        }
-    }
-    public void iniciarRodada () {
-        this.jgv.mostrarRodada(this.numRodada);
-        this.jgv.mostrarMesa(mesa);
-        this.jgv.mostrarJogadorAtual(this.jogadores.get(this.jogadorAtual));
-        this.jdv.mostrarMao(this.jogadores.get(this.jogadorAtual));
-        if (this.jogadores.get(this.jogadorAtual).getMao().size() > 0 ) {
-            escolherCartas((this.jdv.cartaMao(this.jogadores.get(this.jogadorAtual).getMao().size())-1));
-        }
-        this.jdv.mostrarDados(this.jogadores.get(this.jogadorAtual));
-    }
-    public void escolherCartas (int op) {
-        List<Carta> cartasRodada;
-        cartasRodada = new ArrayList<>();
-        Carta cartaMao = this.jogadores.get(this.jogadorAtual).getMao().get(op);
-        cartasRodada.add(cartaMao);
-        if (this.mesa.getMesa().size() > 0) {
-            int qtdCartas = jdv.qtdCartasMesa(this.mesa.getMesa().size());
-            if (qtdCartas > 0) {
-                for (int i = 1; i <= qtdCartas; i++) {
-                    cartasRodada.add(this.mesa.getMesa().get(jdv.cartaMesa(this.mesa.getMesa().size())-1));
-                }
-            }
-        }
-        if (this.jogadores.get(this.jogadorAtual).jogar(cartasRodada)) {
-            System.out.println("\nA soma deu 15 :D Cartas no deck.");
-            this.ultimoPontuador = this.jogadores.get(this.jogadorAtual);
-            this.mesa.removerCarta(cartasRodada);
-            this.jogadores.get(this.jogadorAtual).adicionarAoDeck(cartasRodada);
-            if (this.mesa.getMesa().size() == 0) {
-                this.jogadores.get(this.jogadorAtual).addPontos(1);
-                System.out.println("Parabéns, você fez uma ESCOVA!!!");
-            }
-            if  (this.pts.seteBelo(cartasRodada)) {
-                this.jogadores.get(this.jogadorAtual).addPontos(1);
-                System.out.println("Uhul! Sete belo no deck? Check!");
-            }
-        }
-        else {
-            System.out.println("\nVocê não tem jogo :( Carta na mesa.");
-            this.mesa.receberCarta(cartasRodada.get(0));
-        }
-        this.jogadores.get(this.jogadorAtual).largarCarta(cartaMao);
-    }
-    public void proximoJogador () {
-        this.jogadorAtual++;
-        if (this.jogadorAtual == this.qtdJogadores) {
-            this.jogadorAtual = 0;
-            numRodada++;
+    /**
+     * Verifica se o jogador quer ver o placar final
+     */
+    public void verPlacar () {
+        char placar = jgv.verPlacarFinal();
+        if (placar == 'S') {
+            jgv.mostrarPlacarFinal(this.jogadores);
         }
     }
 }

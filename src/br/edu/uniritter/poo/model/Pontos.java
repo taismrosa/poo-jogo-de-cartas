@@ -8,9 +8,17 @@ public class Pontos {
     private int maiorQtdOuros = 0;
     private int maiorQtdSetes = 0;
 
+    /**
+     * Cria um constructor em branco
+     */
     public Pontos () {
 
     }
+    /**
+     * Verifica se a soma das cartas é igual ou menor a quinze
+     * @param cartasMesa
+     * @return ret
+     */
     public boolean quinzeInicial (Mesa cartasMesa) {
         boolean ret = false;
         int soma = 0;
@@ -23,6 +31,11 @@ public class Pontos {
         }
         return ret;
     }
+    /**
+     * Verifica se uma das cartas é 7 de Ouro
+     * @param cartas
+     * @return ret
+     */
     public boolean seteBelo (List<Carta> cartas) {
         boolean ret = false;
         for (int i = 0; i < cartas.size(); i++) {
@@ -32,6 +45,11 @@ public class Pontos {
         }
         return ret;
     }
+    /**
+     * Retorna se o jogador tem o maior número de cartas no deck
+     * @param jg
+     * @return vencedor
+     */
     public boolean maisCartas (Jogador jg) {
         boolean vencedor = false;
         if (jg.getDeck().size() > this.maiorQtdCartas) {
@@ -40,6 +58,11 @@ public class Pontos {
         }
         return vencedor;
     }
+    /**
+     * Retorna se o jogador tem o maior número de cartas do naipe Ouro no deck
+     * @param jg
+     * @return vencedor
+     */
     public boolean maisOuros (Jogador jg) {
         boolean vencedor = false;
         for (int i = 0; i < jg.getDeck().size(); i++) {
@@ -53,6 +76,11 @@ public class Pontos {
         }
         return vencedor;
     }
+    /**
+     * Retorna se o jogador tem o maior número de cartas de valor 7
+     * @param jg
+     * @return vencedor
+     */
     public boolean maisSetes (Jogador jg) {
         boolean vencedor = false;
         for (int i = 0; i < jg.getDeck().size(); i++) {
@@ -66,6 +94,11 @@ public class Pontos {
         }
         return vencedor;
     }
+    /**
+     * Verifica se o jogador tem quatro cartas de valor Às no deck
+     * @param jg
+     * @return vencedor
+     */
     public boolean todosOsAs (Jogador jg) {
         boolean vencedor = false;
         for (int i = 0; i < jg.getDeck().size(); i++) {
