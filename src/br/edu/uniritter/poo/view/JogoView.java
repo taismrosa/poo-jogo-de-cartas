@@ -151,6 +151,14 @@ public class JogoView {
         System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
     }
     /**
+     * Imprime informações de empate
+     */
+    public void mostrarEmpate () {
+        System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+        System.out.println("                         EMPATOU!                      ");
+        System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+    }
+    /**
      * Retorna se o usuário quer ver as regras ou não
      * @return resp
      */

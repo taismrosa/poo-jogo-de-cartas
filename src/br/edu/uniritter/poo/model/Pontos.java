@@ -4,9 +4,6 @@ import java.util.List;
 import static java.lang.Integer.parseInt;
 
 public class Pontos {
-    private int maiorQtdCartas = 0;
-    private int maiorQtdOuros = 0;
-    private int maiorQtdSetes = 0;
 
     /**
      * Cria um constructor em branco
@@ -26,7 +23,7 @@ public class Pontos {
             soma += cartasMesa.getMesa().get(i).getValor();
         }
         if (soma <= 15) {
-            System.out.println("\nA soma das cartas foi menor ou igual a 15. Parabéns, você ganhou um ponto!");
+            System.out.println("\n\nA soma das cartas foi menor ou igual a 15. O carteador ganhou 1 ponto!");
             ret = true;
         }
         return ret;
@@ -46,69 +43,86 @@ public class Pontos {
         return ret;
     }
     /**
-     * Retorna se o jogador tem o maior número de cartas no deck
-     * @param jg
-     * @return vencedor
+     * Retorna o jogador que tem o maior número de cartas no deck
+     * @param jgs
+     * @return index
      */
-    public boolean maisCartas (Jogador jg) {
-        boolean vencedor = false;
-        if (jg.getDeck().size() > this.maiorQtdCartas) {
-            this.maiorQtdCartas = jg.getDeck().size();
-            vencedor = true;
-        }
-        return vencedor;
-    }
-    /**
-     * Retorna se o jogador tem o maior número de cartas do naipe Ouro no deck
-     * @param jg
-     * @return vencedor
-     */
-    public boolean maisOuros (Jogador jg) {
-        boolean vencedor = false;
-        for (int i = 0; i < jg.getDeck().size(); i++) {
-            if (jg.getDeck().get(i).getNaipe() == " de Ouro") {
-                jg.setQtdOuros();
+    public int maisCartas (List<Jogador> jgs) {
+        int maiorQtd = 0, index = -1;
+        for (int i = 0; i < jgs.size(); i++) {
+            if (jgs.get(i).getDeck().size() > maiorQtd) {
+                maiorQtd = jgs.get(i).getDeck().size();
+                index = i;
+            }
+            else if (jgs.get(i).getDeck().size() == maiorQtd) {
+                index = -1;
             }
         }
-        if (jg.getQtdOuros() > this.maiorQtdOuros) {
-            this.maiorQtdOuros = jg.getQtdOuros();
-            vencedor = true;
-        }
-        return vencedor;
+        return index;
     }
     /**
-     * Retorna se o jogador tem o maior número de cartas de valor 7
-     * @param jg
-     * @return vencedor
+     * Retorna o jogador que tem o maior número de cartas do naipe Ouro no deck
+     * @param jgs
+     * @return index
      */
-    public boolean maisSetes (Jogador jg) {
-        boolean vencedor = false;
-        for (int i = 0; i < jg.getDeck().size(); i++) {
-            if (jg.getDeck().get(i).getValor() == 7) {
-                jg.setQtdSetes();
+    public int maisOuros (List<Jogador> jgs) {
+        int maiorQtd = 0, index = -1;
+        for (int i = 0; i < jgs.size(); i++) {
+            for (int j = 0; j < jgs.get(i).getDeck().size(); j++) {
+                if (jgs.get(i).getDeck().get(j).getNaipe() == " de Ouro") {
+                    jgs.get(i).setQtdOuros();
+                }
+            }
+            if (jgs.get(i).getQtdOuros() > maiorQtd) {
+                maiorQtd = jgs.get(i).getQtdOuros();
+                index = i;
+            }
+            else if (jgs.get(i).getQtdOuros() == maiorQtd) {
+                index = -1;
             }
         }
-        if (jg.getQtdSetes() > this.maiorQtdSetes) {
-            this.maiorQtdSetes = jg.getQtdSetes();
-            vencedor = true;
+        return index;
+    }
+    /**
+     * Retorna o jogador que tem o maior número de cartas de valor 7
+     * @param jgs
+     * @return index
+     */
+    public int maisSetes (List<Jogador> jgs) {
+        int maiorQtd = 0, index = 0;
+        for (int i = 0; i < jgs.size(); i++) {
+            for (int j = 0; j < jgs.get(i).getDeck().size(); j++) {
+                if (jgs.get(i).getDeck().get(j).getValor() == 7) {
+                    jgs.get(i).setQtdSetes();
+                }
+            }
+            if (jgs.get(i).getQtdSetes() > maiorQtd) {
+                maiorQtd = jgs.get(i).getQtdSetes();
+                index = i;
+            }
+            else if (jgs.get(i).getQtdSetes() == maiorQtd) {
+                index = -1;
+            }
         }
-        return vencedor;
+        return index;
     }
     /**
      * Verifica se o jogador tem quatro cartas de valor Às no deck
-     * @param jg
-     * @return vencedor
+     * @param jgs
+     * @return index
      */
-    public boolean todosOsAs (Jogador jg) {
-        boolean vencedor = false;
-        for (int i = 0; i < jg.getDeck().size(); i++) {
-            if (jg.getDeck().get(i).getValor() == 1) {
-                jg.setQtdAs();
+    public int todosOsAs (List<Jogador> jgs) {
+        int index = -1;
+        for (int i = 0; i < jgs.size(); i++) {
+            for (int j = 0; j < jgs.get(i).getDeck().size(); j++) {
+                if (jgs.get(i).getDeck().get(j).getValor() == 1) {
+                    jgs.get(i).setQtdAs();
+                }
+            }
+            if (jgs.get(i).getQtdAs() == 4) {
+                index = i;
             }
         }
-        if (jg.getQtdAs() == 4) {
-            vencedor = true;
-        }
-        return vencedor;
+        return index;
     }
 }

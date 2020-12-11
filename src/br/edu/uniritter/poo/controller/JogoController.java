@@ -117,7 +117,7 @@ public class JogoController {
      */
     public void verificarPrimeiraMesa () {
         if (this.pts.quinzeInicial(this.mesa)) {
-            this.jogadores.get(0).addPontos(1);
+            this.jogadores.get((this.jogadores.size())-1).addPontos(1);
         }
     }
     /**
@@ -188,31 +188,34 @@ public class JogoController {
             this.ultimoPontuador.adicionarAoDeck(this.mesa.getMesa());
             this.ultimoPontuador.addPontos(1);
         }
-        for (int t = 0; t < this.jogadores.size(); t++) {
-            if (this.pts.maisCartas(this.jogadores.get(t))) {
-                this.jogadores.get(t).addPontos(1);
+        if (this.pts.maisCartas(this.jogadores) != -1) {
+            this.jogadores.get(this.pts.maisCartas(this.jogadores)).addPontos(1);
+        }
+        if (this.pts.maisOuros(this.jogadores) != -1) {
+            if (this.jogadores.get(pts.maisOuros(this.jogadores)).getQtdOuros() == 10) {
+                this.jogadores.get(pts.maisOuros(this.jogadores)).addPontos(8);
             }
-            if (this.pts.maisOuros(this.jogadores.get(t))) {
-                if (this.jogadores.get(t).getQtdOuros() == 10) {
-                    this.jogadores.get(t).addPontos(8);
-                }
-                else {
-                    this.jogadores.get(t).addPontos(1);
-                }
-            }
-            if (this.pts.maisSetes(this.jogadores.get(t))) {
-                if (this.jogadores.get(t).getQtdSetes() == 4) {
-                    this.jogadores.get(t).addPontos(7);
-                }
-                else {
-                    this.jogadores.get(t).addPontos(1);
-                }
-            }
-            if (this.pts.todosOsAs(this.jogadores.get(t))) {
-                this.jogadores.get(t).addPontos(4);
+            else {
+                this.jogadores.get(pts.maisOuros(this.jogadores)).addPontos(1);
             }
         }
-        jgv.mostrarVencedor(vit.getVencedor(this.jogadores));
+        if (this.pts.maisSetes(this.jogadores) != -1) {
+            if (this.jogadores.get(this.pts.maisSetes(this.jogadores)).getQtdSetes() == 4) {
+                this.jogadores.get(this.pts.maisSetes(this.jogadores)).addPontos(7);
+            }
+            else {
+                this.jogadores.get(this.pts.maisSetes(this.jogadores)).addPontos(1);
+            }
+        }
+        if (this.pts.todosOsAs(this.jogadores) != -1) {
+            this.jogadores.get(this.pts.todosOsAs(this.jogadores)).addPontos(4);
+        }
+        if (vit.getVencedor(this.jogadores) > -1) {
+            jgv.mostrarVencedor(this.jogadores.get(vit.getVencedor(this.jogadores)));
+        }
+        else {
+            jgv.mostrarEmpate();
+        }
         verPlacar();
     }
     /**

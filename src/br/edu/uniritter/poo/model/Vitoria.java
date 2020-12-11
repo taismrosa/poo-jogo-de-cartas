@@ -13,17 +13,19 @@ public class Vitoria {
     /**
      * Retorna qual jogador tem a maior quantidade de pontos
      * @param jgs
-     * @return vencedor
+     * @return index
      */
-    public Jogador getVencedor (List<Jogador> jgs) {
-        Jogador vencedor = null;
-        int maisPontos = 0;
+    public int getVencedor (List<Jogador> jgs) {
+        int maisPontos = 0, index = 0;
         for (int i = 0; i < jgs.size(); i++) {
             if (jgs.get(i).getPontos() > maisPontos) {
                 maisPontos = jgs.get(i).getPontos();
-                vencedor = jgs.get(i);
+                index = i;
+            }
+            else if (jgs.get(i).getPontos() == maisPontos) {
+                index = -1;
             }
         }
-        return vencedor;
+        return index;
     }
 }
